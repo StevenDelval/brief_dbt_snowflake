@@ -47,6 +47,25 @@ Snowflake account with permissions to create:
     SNOWFLAKE_ACCOUNT=<your_account>
     ```
 2. Ensure your Snowflake account has the required privileges to create warehouses, databases, schemas, and tables.
+Exemple user :
+```sql
+USE ROLE ACCOUNTADMIN;
+
+-- Créer le rôle import_data
+CREATE ROLE IF NOT EXISTS import_data;
+
+-- Créer l'utilisateur DBT
+CREATE USER IF NOT EXISTS import_data_user
+  PASSWORD='MotDePasseDBT123@'
+  LOGIN_NAME='import_data_user'
+  MUST_CHANGE_PASSWORD=FALSE
+  DEFAULT_ROLE='import_data'
+  COMMENT='Utilisateur pour importer les données dans RAW';
+
+-- Assigner le rôle
+GRANT ROLE ACCOUNTADMIN TO USER import_data_user;
+GRANT ROLE import_data TO USER import_data_user;
+```
 
 
 #### Usage
