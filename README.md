@@ -5,12 +5,12 @@ This Python project automates the loading of New York City Yellow Taxi trip data
 
 ### Table of Contents
 
-- Prerequisites
-- Installation
-- Configuration
-- Usage
-- Project Structure
-- Features
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Features](#features)
 
 #### Prerequisites
 
@@ -74,7 +74,7 @@ nyc-taxi-loader/
 └── README.md              # Project documentation
 ```
 
-Features
+#### Features
 
 - Automatic download of NYC Yellow Taxi Parquet files from CloudFront
 - Datetime transformation to Snowflake-compatible format
