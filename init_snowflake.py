@@ -10,6 +10,7 @@ load_dotenv()
 USER = os.getenv("SNOWFLAKE_USER")
 PASSWORD = os.getenv("SNOWFLAKE_PASSWORD")
 ACCOUNT = os.getenv("SNOWFLAKE_ACCOUNT")
+DBT_PASSWORD = os.getenv("DBT_PASSWORD")
 
 # Connexion Snowflake #
 conn = snowflake.connector.connect(
@@ -20,6 +21,11 @@ conn = snowflake.connector.connect(
 cursor = conn.cursor()
 
 cursor.execute("USE ROLE ACCOUNTADMIN;")
+
+## Créer le rôle TRANSFORM et lui donner les droits ##
+cursor.execute("CREATE ROLE IF NOT EXISTS TRANSFORM;")
+cursor.execute("GRANT ROLE TRANSFORM TO ROLE ACCOUNTADMIN;")
+
 ## Créer Warehouse si nécessaire ##
 cursor.execute("""
 CREATE WAREHOUSE IF NOT EXISTS NYC_TAXI_WH
@@ -28,13 +34,35 @@ CREATE WAREHOUSE IF NOT EXISTS NYC_TAXI_WH
     AUTO_SUSPEND = 60
     AUTO_RESUME = TRUE;
 """)
+cursor.execute("GRANT OPERATE ON WAREHOUSE NYC_TAXI_WH TO ROLE TRANSFORM;")
 cursor.execute("USE WAREHOUSE NYC_TAXI_WH;")
+
+## Créer l'utilisateur DBT ##
+cursor.execute(f"""
+CREATE USER IF NOT EXISTS dbt
+  PASSWORD='{DBT_PASSWORD}'
+  LOGIN_NAME='dbt'
+  MUST_CHANGE_PASSWORD=FALSE
+  DEFAULT_WAREHOUSE='NYC_TAXI_WH'
+  DEFAULT_ROLE='TRANSFORM'
+  DEFAULT_NAMESPACE='NYC_TAXI_DB.RAW'
+  COMMENT='DBT user for data transformation';
+""")
+cursor.execute("GRANT ROLE TRANSFORM TO USER dbt;")
 
 ## Créer Database et Schemas si nécessaire ##
 cursor.execute("CREATE DATABASE IF NOT EXISTS NYC_TAXI_DB;")
 cursor.execute("CREATE SCHEMA IF NOT EXISTS NYC_TAXI_DB.RAW;")
 cursor.execute("CREATE SCHEMA IF NOT EXISTS NYC_TAXI_DB.STAGING;")
 cursor.execute("CREATE SCHEMA IF NOT EXISTS NYC_TAXI_DB.FINAL;")
+
+## Donner les permissions au rôle TRANSFORM ## 
+cursor.execute("GRANT ALL ON WAREHOUSE NYC_TAXI_WH TO ROLE TRANSFORM;")
+cursor.execute("GRANT ALL ON DATABASE NYC_TAXI_DB TO ROLE TRANSFORM;")
+cursor.execute("GRANT ALL ON ALL SCHEMAS IN DATABASE NYC_TAXI_DB TO ROLE TRANSFORM;")
+cursor.execute("GRANT ALL ON FUTURE SCHEMAS IN DATABASE NYC_TAXI_DB TO ROLE TRANSFORM;")
+cursor.execute("GRANT ALL ON ALL TABLES IN SCHEMA NYC_TAXI_DB.RAW TO ROLE TRANSFORM;")
+cursor.execute("GRANT ALL ON FUTURE TABLES IN SCHEMA NYC_TAXI_DB.RAW TO ROLE TRANSFORM;")
 
 ## Créer table RAW ##
 cursor.execute("USE DATABASE NYC_TAXI_DB;")
