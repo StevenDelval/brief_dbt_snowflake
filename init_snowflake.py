@@ -28,6 +28,7 @@ CREATE WAREHOUSE IF NOT EXISTS NYC_TAXI_WH
     AUTO_SUSPEND = 60
     AUTO_RESUME = TRUE;
 """)
+cursor.execute("USE WAREHOUSE NYC_TAXI_WH;")
 
 ## Créer Database et Schemas si nécessaire ##
 cursor.execute("CREATE DATABASE IF NOT EXISTS NYC_TAXI_DB;")
