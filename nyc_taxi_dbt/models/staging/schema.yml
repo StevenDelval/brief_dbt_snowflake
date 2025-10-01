@@ -1,0 +1,61 @@
+version: 2
+
+models:
+  - name: clean_trips
+    description: "Cleaned and enriched NYC Yellow Taxi trips"
+    columns:
+      - name: VENDORID
+        description: "Code indiquant le fournisseur TPEP"
+        tests:
+          - not_null
+
+      - name: TPEP_PICKUP_DATETIME
+        description: "Horodatage du début de la course"
+        tests:
+          - not_null
+
+      - name: TPEP_DROPOFF_DATETIME
+        description: "Horodatage de fin de la course"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "{{ column_name }} > TPEP_PICKUP_DATETIME"
+
+      - name: PASSENGER_COUNT
+        description: "Nombre de passagers"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "{{ column_name }} > 0"
+
+      - name: TRIP_DISTANCE
+        description: "Distance de la course en miles"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "{{ column_name }} BETWEEN 0.1 AND 100"
+              
+
+      - name: FARE_AMOUNT
+        description: "Montant de la course"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "{{ column_name }} >= 0"
+
+      - name: TOTAL_AMOUNT
+        description: "Montant total payé par le client"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "{{ column_name }} >= 0"
+
+      - name: PULocationID
+        description: "Zone TLC de prise en charge"
+        tests:
+          - not_null
+
+      - name: DOLocationID
+        description: "Zone TLC de dépose"
+        tests:
+          - not_null
