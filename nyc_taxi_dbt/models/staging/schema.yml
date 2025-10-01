@@ -19,21 +19,24 @@ models:
         tests:
           - not_null
           - dbt_utils.expression_is_true:
-              expression: "{{ column_name }} > TPEP_PICKUP_DATETIME"
+              arguments:
+                expression: "{{ column_name }} > TPEP_PICKUP_DATETIME"
 
       - name: PASSENGER_COUNT
         description: "Nombre de passagers"
         tests:
           - not_null
           - dbt_utils.expression_is_true:
-              expression: "{{ column_name }} > 0"
+              arguments:
+                expression: "{{ column_name }} > 0"
 
       - name: TRIP_DISTANCE
         description: "Distance de la course en miles"
         tests:
           - not_null
           - dbt_utils.expression_is_true:
-              expression: "{{ column_name }} BETWEEN 0.1 AND 100"
+              arguments:
+                expression: "{{ column_name }} BETWEEN 0.1 AND 100"
               
 
       - name: FARE_AMOUNT
@@ -41,14 +44,16 @@ models:
         tests:
           - not_null
           - dbt_utils.expression_is_true:
-              expression: "{{ column_name }} >= 0"
+              arguments:
+                expression: "{{ column_name }} >= 0"
 
       - name: TOTAL_AMOUNT
         description: "Montant total payé par le client"
         tests:
           - not_null
           - dbt_utils.expression_is_true:
-              expression: "{{ column_name }} >= 0"
+              arguments:
+                expression: "{{ column_name }} >= 0"
 
       - name: PULocationID
         description: "Zone TLC de prise en charge"
