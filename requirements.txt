@@ -1,0 +1,3 @@
+dbt-core==1.10.*
+pandas[hdf5, parquet, feather, spss, excel]==2.3
+python-dotenv==1.1.*
