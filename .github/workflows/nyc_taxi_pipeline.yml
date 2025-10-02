@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 0 5 * *'
+    - cron: '0 0 5 * *'  # Le 5 de chaque mois à 00:00 UTC
 
 jobs:
   etl_dbt:
@@ -25,25 +25,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # - name: Run Python ETL
-      #   env:
-      #     SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
-      #     SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
-      #     SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-      #     DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
-      #   run: python init_snowflake.py
-      
       - name: Setup dbt profiles
+        env:
+          DBT_USER: ${{ secrets.SNOWFLAKE_USER }}
+          DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
         run: |
           mkdir -p ~/.dbt
-          echo "
+          cat <<EOF > ~/.dbt/profiles.yml
           nyc_taxi_dbt:
             target: dev
             outputs:
               dev:
                 type: snowflake
                 account: $SNOWFLAKE_ACCOUNT
-                user: $SNOWFLAKE_USER
+                user: $DBT_USER
                 password: $DBT_PASSWORD
                 role: TRANSFORM
                 database: NYC_TAXI_DB
@@ -51,16 +47,16 @@ jobs:
                 schema: RAW
                 threads: 1
                 client_session_keep_alive: False
-          " > ~/.dbt/profiles.yml
-        shell: bash
+          EOF
+
+      # Décommenter si tu veux exécuter le Python ETL avant dbt
+      # - name: Run Python ETL
+      #   env:
+      #     SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      #     SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      #     SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      #     DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
+      #   run: python init_snowflake.py
 
       - name: Run dbt Build
-        env:
-          DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
-          DBT_USER: ${{ secrets.DBT_USER }}
-          DBT_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-        run: |
-          export DBT_USER=$SNOWFLAKE_USER
-          export DBT_PASSWORD=$DBT_PASSWORD
-          export DBT_ACCOUNT=$SNOWFLAKE_ACCOUNT
-          dbt build --project-dir nyc_taxi_dbt
+        run: dbt build --project-dir nyc_taxi_dbt
