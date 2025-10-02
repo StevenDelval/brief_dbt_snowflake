@@ -68,7 +68,7 @@ cursor.execute("GRANT ALL ON FUTURE TABLES IN SCHEMA NYC_TAXI_DB.RAW TO ROLE TRA
 cursor.execute("USE DATABASE NYC_TAXI_DB;")
 cursor.execute("USE SCHEMA RAW;")
 cursor.execute("""
-CREATE IF NOT EXISTS TABLE  yellow_tripdata (
+CREATE TABLE IF NOT EXISTS yellow_tripdata (
     vendorid INT,
     tpep_pickup_datetime DATETIME,
     tpep_dropoff_datetime DATETIME,
