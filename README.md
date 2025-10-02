@@ -69,6 +69,7 @@ GRANT ROLE import_data TO USER import_data_user;
 
 
 #### Usage
+##### Initialization snowflake
 Run the main script to load data:
 ```bash
 python init_snowflake.py
@@ -83,14 +84,83 @@ The script performs the following steps:
 5. Downloads and loads Parquet files for 2024 and 2025
 6. Prints the number of rows inserted for each file
 
+##### DBT Core Usage
+The project includes a nyc_taxi_dbt folder for transformations, testing, and analysis with dbt.
+1. Setup
+    Navigate to the dbt directory:
+    ```sh
+    cd nyc_taxi_dbt
+    ```
+    Configure your Snowflake profile (~/.dbt/profiles.yml):
+    ```yml
+    nyc_taxi:
+    target: dev
+    outputs:
+        dev:
+        type: snowflake
+        account: <your_account>
+        user: <your_user>
+        password: <your_password>
+        role: import_data
+        warehouse: NYC_TAXI_WH
+        database: NYC_TAXI_DB
+        schema: RAW
+        threads: 4
+
+    ```
+2. Common dbt Commands
+
+    - Run all models:
+    ```sh
+    dbt run
+    ```
+
+    - Run the full pipeline (models + tests + snapshots + seeds):
+    ```sh
+    dbt build
+    ```
+
+    - Test models:
+    ```sh
+    dbt run
+    ```
+
+    - Generate and serve documentation::
+    ```sh
+    dbt docs generate
+    dbt docs serve
+    ```
+
+    - Generate and serve documentation::
+    ```sh
+    dbt run --select staging.yellow_tripdata
+    ```
+    Models are organized into staging and final folders to separate raw ingestion from final transformations.
+
+
+
 Project Structure
 ```
 nyc-taxi-loader/
-│
-├── init_snowflake.py      # Main data loading script
-├── requirements.txt       # Python dependencies
-├── .env.example           # Example environment variables file
-└── README.md              # Project documentation
+├── analyse_av_nettoyage.sql
+├── init_snowflake.py
+├── instruction.md
+├── nyc_taxi_dbt
+│   ├── analyses
+│   ├── dbt_project.yml
+│   ├── macros
+│   │   └── generate_schema_name.sql
+│   ├── models
+│   │   ├── final
+│   │   └── staging
+│   ├── package-lock.yml
+│   ├── packages.yml
+│   ├── seeds
+│   ├── snapshots
+│   ├── target
+│   └── tests
+├── README.md
+└── requirements.txt
 ```
 
 #### Features
@@ -100,3 +170,4 @@ nyc-taxi-loader/
 - Adds source file name column
 - Loads data into Snowflake using write_pandas
 - Handles errors for individual files
+- DBT Core support for transformations, tests, and analyses
