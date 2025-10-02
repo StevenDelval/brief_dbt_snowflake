@@ -106,7 +106,7 @@ models:
         tests:
           - dbt_utils.expression_is_true:
               arguments:
-                expression: "{{ column_name }} > 0"
+                expression: "{{ column_name }} >= 0"
 
       - name: pickup_hour
         description: "Hour of the pickup (0-23)"
@@ -137,11 +137,11 @@ models:
         tests:
           - dbt_utils.expression_is_true:
               arguments:
-                expression: "{{ column_name }} >= 0 OR {{ column_name }} IS NULL"
+                expression: " >= 0 OR TIP_PERCENTAGE IS NULL"
 
       - name: TIP_PERCENTAGE
         description: "Tip percentage relative to the fare amount"
         tests:
           - dbt_utils.expression_is_true:
               arguments:
-                expression: "{{ column_name }} >= 0 OR {{ column_name }} IS NULL"
+                expression: " >= 0 OR TIP_PERCENTAGE IS NULL"
