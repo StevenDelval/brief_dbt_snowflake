@@ -32,6 +32,27 @@ jobs:
       #     SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
       #     DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
       #   run: python init_snowflake.py
+      
+      - name: Setup dbt profiles
+        run: |
+          mkdir -p ~/.dbt
+          echo "
+          nyc_taxi_dbt:
+            target: dev
+            outputs:
+              dev:
+                type: snowflake
+                account: $SNOWFLAKE_ACCOUNT
+                user: $SNOWFLAKE_USER
+                password: $DBT_PASSWORD
+                role: TRANSFORM
+                database: NYC_TAXI_DB
+                warehouse: NYC_TAXI_WH
+                schema: RAW
+                threads: 1
+                client_session_keep_alive: False
+          " > ~/.dbt/profiles.yml
+        shell: bash
 
       - name: Run dbt Build
         env:
