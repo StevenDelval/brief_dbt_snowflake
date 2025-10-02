@@ -1,0 +1,147 @@
+version: 2
+
+models:
+  - name: clean_trips
+    description: "Cleaned and enriched NYC Yellow Taxi trips"
+    config:
+      +persist_docs:
+        relation: true
+        columns: true
+    columns:
+      - name: VENDORID
+        description: "Code identifying the TPEP vendor"
+        tests:
+          - not_null
+
+      - name: TPEP_PICKUP_DATETIME
+        description: "Pickup datetime of the trip"
+        tests:
+          - not_null
+
+      - name: TPEP_DROPOFF_DATETIME
+        description: "Dropoff datetime of the trip"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "{{ column_name }} > TPEP_PICKUP_DATETIME"
+
+      - name: PASSENGER_COUNT
+        description: "Number of passengers in the trip"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "{{ column_name }} > 0"
+
+      - name: TRIP_DISTANCE
+        description: "Distance of the trip in miles"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "{{ column_name }} BETWEEN 0.1 AND 100"
+
+      - name: RATECODEID
+        description: "Rate code identifier used for the trip"
+
+      - name: STORE_AND_FWD_FLAG
+        description: "Flag indicating if the trip record was held in vehicle memory before sending to the server"
+
+      - name: PULOCATIONID
+        description: "Pickup location zone ID"
+        tests:
+          - not_null
+
+      - name: DOLOCATIONID
+        description: "Dropoff location zone ID"
+        tests:
+          - not_null
+
+      - name: PAYMENT_TYPE
+        description: "Payment type used for the trip"
+
+      - name: FARE_AMOUNT
+        description: "Fare amount of the trip"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "{{ column_name }} >= 0"
+
+      - name: EXTRA
+        description: "Extra charges applied to the trip"
+
+      - name: MTA_TAX
+        description: "MTA tax applied to the trip"
+
+      - name: TIP_AMOUNT
+        description: "Tip amount given for the trip"
+
+      - name: TOLLS_AMOUNT
+        description: "Tolls amount applied to the trip"
+
+      - name: IMPROVEMENT_SURCHARGE
+        description: "Improvement surcharge applied to the trip"
+
+      - name: TOTAL_AMOUNT
+        description: "Total amount paid by the customer"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "{{ column_name }} >= 0"
+
+      - name: CONGESTION_SURCHARGE
+        description: "Congestion surcharge applied to the trip"
+
+      - name: AIRPORT_FEE
+        description: "Airport fee applied to the trip"
+
+      - name: CBD_CONGESTION_FEE
+        description: "Central Business District congestion fee applied to the trip"
+
+      - name: TRIP_DURATION_MIN
+        description: "Trip duration in minutes"
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "{{ column_name }} >= 0"
+
+      - name: pickup_hour
+        description: "Hour of the pickup (0-23)"
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "{{ column_name }} BETWEEN 0 AND 23"
+
+      - name: pickup_day
+        description: "Day of the pickup (1-31)"
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "{{ column_name }} BETWEEN 1 AND 31"
+
+      - name: pickup_month
+        description: "Month of the pickup (1-12)"
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "{{ column_name }} BETWEEN 1 AND 12"
+
+      - name: pickup_year
+        description: "Year of the pickup"
+
+      - name: AVG_SPEED_MPH
+        description: "Average speed of the trip in miles per hour"
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " >= 0 OR TIP_PERCENTAGE IS NULL"
+
+      - name: TIP_PERCENTAGE
+        description: "Tip percentage relative to the fare amount"
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " >= 0 OR TIP_PERCENTAGE IS NULL"

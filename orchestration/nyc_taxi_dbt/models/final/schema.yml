@@ -1,0 +1,69 @@
+version: 2
+
+models:
+  - name: daily_summary
+    description: "Daily summary of trips including the number of trips, average trip distance, and total revenue."
+    config:
+      +persist_docs:
+        relation: true
+        columns: true
+    columns:
+      - name: pickup_date
+        description: "The date of the trip pickup."
+        tests:
+          - not_null
+          - unique
+
+      - name: nb_trajet
+        description: "Total number of trips on this date."
+        tests:
+          - not_null
+
+      - name: avg_trip_distance
+        description: "Average distance of trips in miles."
+
+      - name: total_revenue
+        description: "Total revenue generated on this date."
+
+  - name: hourly_patterns
+    description: "Hourly analysis of trips including number of trips, average revenue, and average speed."
+    config:
+      +persist_docs:
+        relation: true
+        columns: true
+    columns:
+      - name: pickup_hour
+        description: "The hour of the trip pickup (0-23)."
+        tests:
+          - not_null
+
+      - name: nb_trajet
+        description: "Total number of trips during this hour."
+
+      - name: avg_revenue
+        description: "Average revenue per trip for this hour."
+
+      - name: avg_speed_mph
+        description: "Average speed of trips in miles per hour."
+
+  - name: zone_analysis
+    description: "Analysis by pickup zone including trip volume, average revenue, and popularity percentage."
+    config:
+      +persist_docs:
+        relation: true
+        columns: true
+    columns:
+      - name: PULOCATIONID
+        description: "ID of the pickup location zone."
+        tests:
+          - not_null
+          - unique
+
+      - name: trip_volume
+        description: "Total number of trips originating from this zone."
+
+      - name: avg_revenue
+        description: "Average revenue of trips from this zone."
+        
+      - name: popularity_pct
+        description: "Percentage of trips originating from this zone compared to all zones."
