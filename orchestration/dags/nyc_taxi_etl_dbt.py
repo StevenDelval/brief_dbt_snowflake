@@ -20,10 +20,10 @@ with DAG(
 ) as dag:
 
     def run_python_etl():
-        subprocess.run(["python", "/path/to/init_snowflake.py"], check=True)
+        subprocess.run(["python", "../init_snowflake.py"], check=True)
 
     def run_dbt_build():
-        subprocess.run(["dbt", "build", "--project-dir", "/path/to/nyc_taxi_dbt"], check=True)
+        subprocess.run(["dbt", "build", "--project-dir", "../nyc_taxi_dbt"], check=True)
 
     etl_task = PythonOperator(
         task_id="run_python_etl",
