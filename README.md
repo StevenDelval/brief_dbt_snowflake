@@ -137,9 +137,7 @@ The project includes a nyc_taxi_dbt folder for transformations, testing, and ana
     ```
     Models are organized into staging and final folders to separate raw ingestion from final transformations.
 
-
-
-Project Structure
+#### Project Structure
 ```
 nyc-taxi-loader/
 ├── analyse_av_nettoyage.sql
