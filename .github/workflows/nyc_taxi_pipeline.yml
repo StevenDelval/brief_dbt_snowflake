@@ -58,5 +58,8 @@ jobs:
       #     DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
       #   run: python init_snowflake.py
 
+      - name: Install dbt packages
+        run: dbt deps --project-dir nyc_taxi_dbt
+
       - name: Run dbt Build
         run: dbt build --project-dir nyc_taxi_dbt
