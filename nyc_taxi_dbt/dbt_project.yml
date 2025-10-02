@@ -33,9 +33,15 @@ models:
   nyc_taxi_dbt:
     # Config indicated by + and applies to all files under models/example/
     staging:
+      +persist_docs:
+        relation: true    # ajoute la description sur la table dans Snowflake
+        columns: true     # ajoute les descriptions sur les colonnes
       +materialized: table
       +schema: staging
     
     final:
+      +persist_docs:
+        relation: true    # ajoute la description sur la table dans Snowflake
+        columns: true     # ajoute les descriptions sur les colonnes
       +materialized: view
       +schema: final

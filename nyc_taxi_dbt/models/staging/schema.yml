@@ -3,6 +3,10 @@ version: 2
 models:
   - name: clean_trips
     description: "Cleaned and enriched NYC Yellow Taxi trips"
+    config:
+      +persist_docs:
+        relation: true
+        columns: true
     columns:
       - name: VENDORID
         description: "Code indiquant le fournisseur TPEP"
