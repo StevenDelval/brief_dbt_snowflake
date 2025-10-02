@@ -1,9 +1,9 @@
 version: 2
 
 sources:
-  - name: raw_airbnb_data
-    description: "Données brutes Airbnb chargées depuis le repository Git"
-    database: airbnb
-    schema: raw
+  - name: raw_yellow_tripdata
+    description: "Raw NYC Yellow Taxi trip data loaded from Snowflake"
+    database: NYC_TAXI_DB   
+    schema: RAW
     tables:
-      - name: hosts
+      - name: YELLOW_TRIPDATA
