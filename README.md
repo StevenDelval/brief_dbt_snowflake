@@ -20,6 +20,14 @@ Snowflake account with permissions to create:
 - Databases
 - Schemas
 - Tables
+Docker (for running Astronomer/Airflow locally)
+Astronomer CLI (for local development and orchestration)
+  - Install via [Astronomer Docs](https://www.astronomer.io/docs/cloud/stable/get-started/quickstart/)
+  - Verify installation:
+    ```bash
+    astro version
+    ```
+- Git (to clone the repository)
 
 #### Installation
 
@@ -137,12 +145,71 @@ The project includes a nyc_taxi_dbt folder for transformations, testing, and ana
     ```
     Models are organized into staging and final folders to separate raw ingestion from final transformations.
 
+##### Airflow Orchestration
+
+All DAGs and Airflow-related configurations are located in the orchestration/ folder. This ensures that the ETL and dbt processes are modular and separated from the raw ingestion and transformation code.
+1. Folder Structure
+```
+orchestration/
+├── dags/
+│   └── dbt_nyc_taxi_snowflake.py    # DAG that loads missing files and runs dbt
+├── plugins/                         # optional: custom Airflow operators/hooks
+├── requirements.txt                  # Airflow + dbt dependencies
+├── docker-compose.override.yml       # environment variables for Snowflake
+└── README.md                         # optional documentation for orchestration
+```
+2. Environment Variables
+
+Create a .env file in the orchestration/ folder (ignored in GitHub) with your Snowflake credentials:
+```
+SNOWFLAKE_ACCOUNT=your_SNOWFLAKE_ACCOUNT
+SNOWFLAKE_USER=your_SNOWFLAKE_USER
+SNOWFLAKE_PASSWORD=your_SNOWFLAKE_PASSWORD
+DBT_USER=your_DBT_USER
+DBT_PASSWORD=your_DBT_PASSWORD
+SNOWFLAKE_ROLE=your_SNOWFLAKE_ROLE
+SNOWFLAKE_DATABASE=your_SNOWFLAKE_DATABASE
+SNOWFLAKE_WAREHOUSE=your_SNOWFLAKE_WAREHOUSE
+SNOWFLAKE_SCHEMA=your_SNOWFLAKE_SCHEMA
+```
+3. Run the DAG
+- Navigate to the orchestration/ folder:
+```
+cd orchestration/
+```
+- Start Airflow / Astronomer:
+```
+astro dev start
+```
+- Trigger the DAG from the Airflow UI or wait for the schedule.
+
+- Below is an example DAG for loading NYC Yellow Taxi data and running dbt transformations:
+
+![NYC Taxi DAG](exemple_airflow.png)
+
+- `load_missing_files` → loads missing Parquet files into Snowflake
+- `dbt_run` → runs all dbt models
+- `dbt_test` → runs dbt tests after ingestion
+
+
+
 #### Project Structure
 ```
 nyc-taxi-loader/
 ├── analyse_av_nettoyage.sql
 ├── init_snowflake.py
 ├── instruction.md
+├── orchestration
+├── airflow_settings.yaml
+├── dags
+├── Dockerfile
+│   ├── include
+│   ├── nyc_taxi_dbt
+│   ├── packages.txt
+│   ├── plugins
+│   ├── README.md
+│   ├── requirements.txt
+│   └── tests
 ├── nyc_taxi_dbt
 │   ├── analyses
 │   ├── dbt_project.yml
