@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - main
-  schedule:
-    - cron: '0 2 * * *'  # tous les jours à 2h UTC
+  # schedule:
+  #   - cron: '0 2 * * *'  # tous les jours à 2h UTC
 
 jobs:
   etl_dbt:
@@ -24,7 +24,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install dbt-snowflake apache-airflow apache-airflow-providers-snowflake
 
       - name: Run Python ETL
         env:
