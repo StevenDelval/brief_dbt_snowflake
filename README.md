@@ -141,7 +141,7 @@ The project includes a nyc_taxi_dbt folder for transformations, testing, and ana
     dbt docs serve
     ```
 
-    - Generate and serve documentation::
+    - Run a specific model:
     ```sh
     dbt run --select staging.yellow_tripdata
     ```
