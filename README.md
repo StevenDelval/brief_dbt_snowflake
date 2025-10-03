@@ -20,6 +20,7 @@ Snowflake account with permissions to create:
 - Databases
 - Schemas
 - Tables
+
 Docker (for running Astronomer/Airflow locally)
 
 Astronomer CLI (for local development and orchestration)
