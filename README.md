@@ -21,6 +21,7 @@ Snowflake account with permissions to create:
 - Schemas
 - Tables
 Docker (for running Astronomer/Airflow locally)
+
 Astronomer CLI (for local development and orchestration)
   - Install via [Astronomer Docs](https://www.astronomer.io/docs/cloud/stable/get-started/quickstart/)
   - Verify installation:
