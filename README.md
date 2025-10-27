@@ -153,12 +153,16 @@ All DAGs and Airflow-related configurations are located in the orchestration/ fo
 1. Folder Structure
 ```
 orchestration/
-├── dags/
-│   └── dbt_nyc_taxi_snowflake.py    # DAG that loads missing files and runs dbt
-├── plugins/                         # optional: custom Airflow operators/hooks
-├── requirements.txt                  # Airflow + dbt dependencies
-├── docker-compose.override.yml       # environment variables for Snowflake
-└── README.md                         # optional documentation for orchestration
+├── airflow_settings.yaml
+├── dags
+├── Dockerfile
+├── include
+├── nyc_taxi_dbt
+├── packages.txt
+├── plugins
+├── README.md
+├── requirements.txt
+└── tests
 ```
 2. Environment Variables
 
@@ -202,9 +206,9 @@ nyc-taxi-loader/
 ├── init_snowflake.py
 ├── instruction.md
 ├── orchestration
-├── airflow_settings.yaml
-├── dags
-├── Dockerfile
+│   ├── airflow_settings.yaml
+│   ├── dags
+│   ├── Dockerfile
 │   ├── include
 │   ├── nyc_taxi_dbt
 │   ├── packages.txt
