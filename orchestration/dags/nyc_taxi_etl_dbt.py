@@ -20,10 +20,7 @@ DATABASE= os.getenv("SNOWFLAKE_DATABASE")
 SCHEMA= os.getenv("SNOWFLAKE_SCHEMA")
 
 # --- Paramètres de fichiers à charger ---
-YEARS = [2024, 2025]
-MONTHS = range(1, 13)
-
-YEARS = [2023,2024, 2025]
+YEARS = [2022, 2023, 2024, 2025]
 MONTHS = range(1, 13)
 
 def load_missing_files():
